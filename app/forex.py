@@ -1,27 +1,37 @@
-import streamlit as st
+# app/forex.py
+
 import yfinance as yf
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
-def show():
-    st.header("💱 Forex Exchange Rates")
+def predict_forex(from_currency, to_currency):
+    pair = f"{from_currency}{to_currency}=X"
+    df = yf.download(pair, period="6mo", interval="1d")
 
-    pairs = {
-        "EUR/USD": "EURUSD=X",
-        "USD/JPY": "USDJPY=X",
-        "GBP/USD": "GBPUSD=X",
-        "USD/CHF": "USDCHF=X",
-        "AUD/USD": "AUDUSD=X",
-        "USD/CAD": "USDCAD=X",
-        "EUR/GBP": "EURGBP=X"
-    }
+    if df.empty:
+        raise ValueError(f"Invalid or unavailable forex pair: {pair}")
 
-    selected_pair = st.selectbox("Select Currency Pair", list(pairs.keys()))
-    symbol = pairs[selected_pair]
+    df["Target"] = (df["Close"].shift(-1) > df["Close"]).astype(int)
+    df.dropna(inplace=True)
 
-    data = yf.Ticker(symbol).history(period="3mo", interval="1d")
+    features = ["Open", "High", "Low", "Close", "Volume"]
+    X = df[features]
+    y = df["Target"]
 
-    st.subheader(f"{selected_pair} — Last 3 Months")
-    st.line_chart(data["Close"])
+    X_train, X_test, y_train, y_test = train_test_split(X, y, shuffle=False)
 
-    st.write("Latest exchange rate data:")
-    st.dataframe(data.tail())
+    model = LogisticRegression()
+    model.fit(X_train, y_train)
+
+    last_data = X.tail(1)
+    prediction = model.predict(last_data)[0]
+    probability = model.predict_proba(last_data)[0]
+    direction = "UP" if prediction == 1 else "DOWN"
+    confidence = round(max(probability) * 100, 2)
+    accuracy = round(accuracy_score(y_test, model.predict(X_test)) * 100, 2)
+
+    return df, direction, confidence, accuracy
+
 

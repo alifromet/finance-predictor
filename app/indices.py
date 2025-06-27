@@ -1,29 +1,30 @@
-import streamlit as st
+# app/indices.py
+
 import yfinance as yf
-import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
-def show():
-    st.header("📊 Global Market Indices")
+def predict_index(index_symbol):
+    df = yf.download(index_symbol, period="6mo", interval="1d")
+    df["Target"] = (df["Close"].shift(-1) > df["Close"]).astype(int)
+    df.dropna(inplace=True)
 
-    index_map = {
-        "S&P 500 (US)": "^GSPC",
-        "NASDAQ (US)": "^IXIC",
-        "Dow Jones (US)": "^DJI",
-        "FTSE 100 (UK)": "^FTSE",
-        "DAX (Germany)": "^GDAXI",
-        "Nikkei 225 (Japan)": "^N225",
-        "CAC 40 (France)": "^FCHI",
-        "BSE Sensex (India)": "^BSESN"
-    }
+    features = ["Open", "High", "Low", "Close", "Volume"]
+    X = df[features]
+    y = df["Target"]
 
-    selected_index = st.selectbox("Choose Index", list(index_map.keys()))
-    symbol = index_map[selected_index]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, shuffle=False)
 
-    data = yf.Ticker(symbol).history(period="6mo")
+    model = LogisticRegression()
+    model.fit(X_train, y_train)
 
-    st.subheader(f"{selected_index} — Last 6 Months")
-    st.line_chart(data["Close"])
+    last_data = X.tail(1)
+    prediction = model.predict(last_data)[0]
+    probability = model.predict_proba(last_data)[0]
+    direction = "UP" if prediction == 1 else "DOWN"
+    confidence = round(max(probability) * 100, 2)
+    accuracy = round(accuracy_score(y_test, model.predict(X_test)) * 100, 2)
 
-    st.write("Recent data preview:")
-    st.dataframe(data.tail())
-
+    return df, direction, confidence, accuracy

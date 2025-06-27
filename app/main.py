@@ -1,5 +1,9 @@
 import streamlit as st
-from app import stocks, indices, forex, options
+import stocks
+import indices
+import forex
+import options
+
 
 st.set_page_config(page_title="Finance Dashboard", layout="wide")
 

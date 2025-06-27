@@ -27,7 +27,23 @@ if st.button("Predict Stock"):
 # ---- INDICES TAB ----
 with tab2:
     st.header("Index Prediction")
-    index = st.selectbox("Select Index", ["^GSPC", "^IXIC", "^DJI"])
+    indices_options = {
+    "S&P 500": "^GSPC",
+    "Dow Jones": "^DJI",
+    "Nasdaq Composite": "^IXIC",
+    "Russell 2000": "^RUT",
+    "FTSE 100": "^FTSE",
+    "DAX (Germany)": "^GDAXI",
+    "CAC 40 (France)": "^FCHI",
+    "Nikkei 225 (Japan)": "^N225",
+    "Hang Seng (Hong Kong)": "^HSI",
+    "ASX 200 (Australia)": "^AXJO",
+    "TSX Composite (Canada)": "^GSPTSE",
+}
+
+selected_index_name = st.selectbox("Select an Index", list(indices_options.keys()))
+selected_index_symbol = indices_options[selected_index_name]
+
 
     if st.button("Predict Index"):
         df, direction, confidence, accuracy = indices.predict_index(index)

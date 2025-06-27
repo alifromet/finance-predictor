@@ -24,32 +24,41 @@ if st.button("Predict Stock"):
     st.info(f"🔢 **Confidence**: {confidence}%")
     st.info(f"🎯 **Model Accuracy**: {accuracy}%")
 
-# ---- INDICES TAB ----
-with tab2:
-    st.header("Index Prediction")
-    indices_options = {
-    "S&P 500": "^GSPC",
-    "Dow Jones": "^DJI",
-    "Nasdaq Composite": "^IXIC",
-    "Russell 2000": "^RUT",
-    "FTSE 100": "^FTSE",
-    "DAX (Germany)": "^GDAXI",
-    "CAC 40 (France)": "^FCHI",
-    "Nikkei 225 (Japan)": "^N225",
-    "Hang Seng (Hong Kong)": "^HSI",
-    "ASX 200 (Australia)": "^AXJO",
-    "TSX Composite (Canada)": "^GSPTSE",
-}
+import streamlit as st
+from app import indices  # your indices.py with predict_index function
 
-selected_index_name = st.selectbox("Select an Index", list(indices_options.keys()))
-selected_index_symbol = indices_options[selected_index_name]
+def indices_tab():
+    st.header("📊 Indices Prediction")
+
+    indices_options = {
+        "S&P 500": "^GSPC",
+        "Dow Jones": "^DJI",
+        "Nasdaq Composite": "^IXIC",
+        "Russell 2000": "^RUT",
+        "FTSE 100": "^FTSE",
+        "DAX (Germany)": "^GDAXI",
+        "CAC 40 (France)": "^FCHI",
+        "Nikkei 225 (Japan)": "^N225",
+        "Hang Seng (Hong Kong)": "^HSI",
+        "ASX 200 (Australia)": "^AXJO",
+        "TSX Composite (Canada)": "^GSPTSE",
+    }
+
+    selected_index_name = st.selectbox("Select an Index to Predict", list(indices_options.keys()))
+    selected_index_symbol = indices_options[selected_index_name]
 
     if st.button("Predict Index"):
-        df, direction, confidence, accuracy = indices.predict_index(index)
-        st.line_chart(df["Close"])
-        st.success(f"📈 **Prediction**: {direction}")
-        st.info(f"🔢 **Confidence**: {confidence}%")
-        st.info(f"🎯 **Model Accuracy**: {accuracy}%")
+        try:
+            df, direction, confidence, accuracy = indices.predict_index(selected_index_symbol)
+            st.line_chart(df["Close"])
+            st.success(f"Prediction: **{direction}**")
+            st.info(f"Confidence: {confidence}%")
+            st.info(f"Model Accuracy: {accuracy}%")
+        except Exception as e:
+            st.error(f"Error: {e}")
+
+# Then in your main.py you call indices_tab() where you render the indices section.
+
 
 # ---- FOREX TAB ----
 with tab3:

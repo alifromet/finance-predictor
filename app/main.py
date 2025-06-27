@@ -44,7 +44,6 @@ with tab2:
 selected_index_name = st.selectbox("Select an Index", list(indices_options.keys()))
 selected_index_symbol = indices_options[selected_index_name]
 
-
     if st.button("Predict Index"):
         df, direction, confidence, accuracy = indices.predict_index(index)
         st.line_chart(df["Close"])

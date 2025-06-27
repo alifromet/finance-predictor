@@ -60,3 +60,8 @@ with tab4:
         st.success(f"📈 **Prediction**: {direction}")
         st.info(f"🔢 **Confidence**: {confidence}%")
         st.info(f"🎯 **Model Accuracy**: {accuracy}%")
+try:
+    df, direction, confidence, accuracy = stocks.predict_stock(ticker, period, interval)
+except ValueError as e:
+    st.error(f"⚠️ {e}")
+    st.stop()

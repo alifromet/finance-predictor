@@ -1,10 +1,5 @@
----
-
-### 📦 `requirements.txt`
-```txt
 streamlit
 yfinance
 pandas
 matplotlib
-forex-python
 scikit-learn

@@ -4,7 +4,7 @@ import indices
 import forex
 import options
 
-t.set_page_config(page_title="Finance Predictor", layout="wide")
+st.set_page_config(page_title="Finance Predictor", layout="wide")
 st.title("📈 Finance Market Direction Predictor")
 
 tab1, tab2, tab3, tab4 = st.tabs(["📊 Stocks", "🌐 Indices", "💱 Forex", "🧾 Options"])

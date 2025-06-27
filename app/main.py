@@ -10,16 +10,22 @@ st.title("📈 Finance Market Direction Predictor")
 tab1, tab2, tab3, tab4 = st.tabs(["📊 Stocks", "🌐 Indices", "💱 Forex", "🧾 Options"])
 
 # ---- STOCKS TAB ----
-with tab1:
-    st.header("Stock Prediction")
-    ticker = st.text_input("Enter Stock Ticker (e.g., AAPL, TSLA)", "AAPL")
+import streamlit as st
+from app import stocks
 
-    if st.button("Predict Stock"):
-        df, direction, confidence, accuracy = stocks.predict_stock(ticker)
-        st.line_chart(df["Close"])
-        st.success(f"📈 **Prediction**: {direction}")
-        st.info(f"🔢 **Confidence**: {confidence}%")
-        st.info(f"🎯 **Model Accuracy**: {accuracy}%")
+st.title("📈 Finance Market Direction Predictor")
+
+ticker = st.text_input("Enter Stock Ticker (e.g., AAPL, TSLA)", "AAPL")
+
+period = st.selectbox("Select data period", ["1d", "5d", "7d", "1mo", "3mo", "6mo"])
+interval = st.selectbox("Select interval", ["1m", "5m", "15m", "30m", "1h", "1d"])
+
+if st.button("Predict Stock"):
+    df, direction, confidence, accuracy = stocks.predict_stock(ticker, period, interval)
+    st.line_chart(df["Close"])
+    st.success(f"📈 **Prediction**: {direction}")
+    st.info(f"🔢 **Confidence**: {confidence}%")
+    st.info(f"🎯 **Model Accuracy**: {accuracy}%")
 
 # ---- INDICES TAB ----
 with tab2:

@@ -10,9 +10,6 @@ st.title("📈 Finance Market Direction Predictor")
 tab1, tab2, tab3, tab4 = st.tabs(["📊 Stocks", "🌐 Indices", "💱 Forex", "🧾 Options"])
 
 # ---- STOCKS TAB ----
-import streamlit as st
-from app import stocks
-
 st.title("📈 Finance Market Direction Predictor")
 
 ticker = st.text_input("Enter Stock Ticker (e.g., AAPL, TSLA)", "AAPL")

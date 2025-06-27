@@ -10,6 +10,12 @@ def predict_stock(ticker, period="6mo", interval="1d"):
     
     if df.empty:
         raise ValueError("No data fetched. Please check your ticker or select different period/interval.")
+    
+    if len(df) < 10:
+        raise ValueError(f"Not enough data to train the model. Only {len(df)} rows received. Try increasing period or changing interval.")
+    
+    # Your existing prediction logic follows here...
+
 
     # Create the target: will next candle be higher?
     df["Target"] = (df["Close"].shift(-1) > df["Close"]).astype(int)

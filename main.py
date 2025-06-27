@@ -1,8 +1,8 @@
-import streamlit as st
-import stocks
-import indices
-import forex
-import options
+from app import stocks
+from app import indices
+from app import forex
+from app import options
+
 
 st.set_page_config(page_title="Finance Predictor", layout="wide")
 st.title("📈 Finance Market Direction Predictor")
